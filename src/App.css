@@ -1,6 +1,11 @@
+
 .App {
-  text-align: center;
+  display: flex;
+  align-items: center; /* Centre verticalement */
+  justify-content: center; /* Centre horizontalement */
+  height: 100vh;
 }
+
 
 .App-logo {
   height: 40vmin;
