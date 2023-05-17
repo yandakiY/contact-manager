@@ -5,7 +5,7 @@ import ContactNotFound from './ContactNotFound';
 
 const TableContact = ({ contacts, favContact, textFilter }) => {
 
-    // filtrer direct les datas of contacts
+    // filtrer direct les datas du contacts
     let contactsFilter = [];
 
     contacts.forEach(e => {

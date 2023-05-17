@@ -5,50 +5,66 @@ import FilterSection from './components/FilterSection';
 import TableContact from './components/TableContact';
 import Title from './components/Title';
 import apiAxios from './axios/apiAxios';
+import { useDispatch, useSelector } from 'react-redux';
+import { actionsContacts } from './store/contact-slice';
+import { actionsFilter } from './store/filter-slice';
+import { getContacts } from './firebase';
 
 function App() {
 
-  const [textFilter, settextFilter] = React.useState('')
+  // const [textFilter, settextFilter] = React.useState('')
   const [favContact, setfavContact] = React.useState(false)
 
-  const [data , setData] = React.useState([
-    // {
-    //   id:1,
-    //   name:'test',
-    //   telephone:'0394049444'
-    // },
-    // {
-    //   id:2,
-    //   name:'test@test',
-    //   telephone:'0394049444'
-    // },
-    // {
-    //   id:3,
-    //   name:'test1',
-    //   telephone:'0594387489'
-    // },
-    // {
-    //   id:4,
-    //   name:'alberto',
-    //   telephone:'1111111111'
-    // },
-  ])
+  // Dispatch variable
+  const dispatch = useDispatch();
+
+  // Get state since contactsSlice with useSelector
+  let contacts = useSelector(state => state.contacts.contacts)
+
+  // Get state filter of text
+  let textFilter = useSelector(state => state.filters.textFilter)
+
+  // Function change value of filter text
+  const settextFilter = valueSearch => {
+    dispatch(actionsFilter.settextFilter(valueSearch))
+  }
+  // console.log('Contacts slice', contacts)
+
 
   const handleAdd = async dataContact =>{
 
-    await apiAxios.put(process.env.REACT_APP_BASE_URL,[...data,{id:new Date().getTime(),...dataContact}]);
-    console.log("Send "+ dataContact)
+    // Add a id for this new value with Date().getTime()
+    let dataToSend = {id:new Date().getTime(),...dataContact};
 
-    setData([...data , dataContact])
+    // Send the new state of contacts in Firebase realtime database
+    await apiAxios.put(process.env.REACT_APP_BASE_URL,[...contacts, dataToSend])
+      .then(data => console.log('data'))
+      .catch(err => console.error(err))
+
+    
+    // Updating of contacts state thanks to dispatch and actionsContacts
+    dispatch(actionsContacts.setContacts([...contacts , dataToSend]))
 
   }
 
-  // console.log(process.env.REACT_APP_API_KEY)
-
+  // funtion async who get the lists of contacts from firebase
+  
   // UseEffect Appel
   React.useEffect(() =>{
+    const getContactsFromFirebase = async () =>{
+      const data = await getContacts()
 
-  }, [])
+      if(data){
+        dispatch(actionsContacts.setContacts(data))
+      }else{
+        dispatch(actionsContacts.setContacts([]))
+      }
+    }
+
+    getContactsFromFirebase()
+  }, [dispatch])
+
+
   return (
     <div className="App">
     {/* <div>test</div> */}
@@ -58,7 +74,7 @@ function App() {
           <FilterSection textFilter={textFilter} settextFilter={settextFilter} favContact={favContact} setfavContact={setfavContact} />
         </div>
         <div className="rowContacts">
-          <TableContact  textFilter={textFilter} favContact={favContact} contacts={data}/>
+          <TableContact  textFilter={textFilter} favContact={favContact} contacts={contacts}/>
         </div>
       </div>
     </div>
