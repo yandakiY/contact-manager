@@ -16,6 +16,16 @@ const contactSlice = createSlice({
 
             // use filter pour delete l'element
             state.contacts = state.contacts.filter(e => e.id !== id)
+        },
+
+        updateContact(state , action){
+            // Two params : id and the new object
+            // const id = action.payload.id
+            const contactData = action.payload
+
+            // Read all elements of state contacts, and find the elements who correspond to id
+            // Replace by the contactData
+            state.contacts = state.contacts.map(e => e.id === contactData.id ? contactData : e)
         }
     }
 })
