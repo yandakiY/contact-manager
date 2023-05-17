@@ -4,12 +4,21 @@ import { useForm } from 'react-hook-form'
 
 const UpdateContact = ({ contact, openModalUpdate, handleCloseModalUpdate }) => {
 
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const { register, handleSubmit , setValue , formState: { errors } } = useForm({
         defaultValues:{
             name:contact.name,
             telephone:contact.telephone
         }
     });
+
+    const getValues = () =>{
+        setValue('name' , contact.name)
+        setValue('telephone' , contact.telephone)
+    }
+
+    React.useEffect(() =>{
+        getValues();
+    })
 
     return (
         <>

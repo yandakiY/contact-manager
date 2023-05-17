@@ -5,12 +5,21 @@ import apiAxios from '../axios/apiAxios';
 
 const AddContact = ({ openModal, handleAdd , handleOpenModal, handleCloseModal }) => {
 
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit , setValue, formState: { errors } } = useForm();
 
     const submitData =  data =>{
         handleAdd(data)
         handleCloseModal();
     }
+
+    const wideField = () => {
+        setValue('name' , '')
+        setValue('telephone' , '')
+    }
+
+    React.useEffect(() =>{
+        wideField();
+    })
 
     return (
         <>
